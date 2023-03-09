@@ -20,4 +20,5 @@ class FoodTruck
       item.price * amount
     end
   end
+
 end

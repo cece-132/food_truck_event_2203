@@ -2,7 +2,7 @@ require './lib/item'
 require './lib/food_truck'
 require './lib/event'
 
-RSpec.describe Event do 262.5
+RSpec.describe Event do 
   before :each do
     @event = Event.new("South Pearl Street Farmers Market")
 
@@ -14,14 +14,6 @@ RSpec.describe Event do 262.5
     @apple = Item.new({name: 'Apple Pie (Slice)', price: '$2.50'})
     @peach_nice_cream = Item.new({name: "Peach-Raspberry Nice Cream", price: "$5.30"})
     @banana_nice_cream = Item.new({name: "Banana Nice Cream", price: "$4.25"})
-
-    @mountain_truck.stock(@peach, 35)
-    @mountain_truck.stock(@apple, 7)
-
-    @nom_truck.stock(@banana_nice_cream, 50)
-    @nom_truck.stock(@peach_nice_cream, 25)
-
-    @shack_truck.stock(@peach, 65)
   end
 
   describe '#initialize' do
@@ -33,27 +25,120 @@ RSpec.describe Event do 262.5
     end
   end
 
-  before :each do
-    @event.add_food_truck(@mountain_truck)
-    @event.add_food_truck(@nom_truck)
-    @event.add_food_truck(@shack_truck)
-  end
-
   describe '#add_food_truck(truck)' do
+    before :each do
+      @event.add_food_truck(@mountain_truck)
+      @event.add_food_truck(@nom_truck)
+      @event.add_food_truck(@shack_truck)
+    end
+
     it 'can add food trucks to an event' do
       expect(@event.food_trucks).to eq [@mountain_truck, @nom_truck, @shack_truck]
     end
   end
 
   describe '#food_truck_names' do
+    before :each do
+      @event.add_food_truck(@mountain_truck)
+      @event.add_food_truck(@nom_truck)
+      @event.add_food_truck(@shack_truck)
+    end
+
     it 'should return a list of all the food truck names' do
       expect(@event.food_truck_names).to eq ["Rocky Mountain Pies", "Ba-Nom-a-Nom", "Palisade Peach Shack"]
     end
   end
 
+
+
   describe '#food_trucks_that_sell(item)' do
+    before :each do
+      @event.add_food_truck(@mountain_truck)
+      @event.add_food_truck(@nom_truck)
+      @event.add_food_truck(@shack_truck)
+      
+      @mountain_truck.stock(@peach, 35)
+      @mountain_truck.stock(@apple, 7)
+
+      @nom_truck.stock(@banana_nice_cream, 50)
+      @nom_truck.stock(@peach_nice_cream, 25)
+
+      @shack_truck.stock(@peach, 65)
+      @shack_truck.stock(@peach_nice_cream, 10)
+    end
+
     it 'return the trucks that sell the item' do
       expect(@event.food_trucks_that_sell(@peach)).to eq [@mountain_truck, @shack_truck]
+    end
+  end
+
+ describe '#sorted_item_list' do
+  before :each do
+    @event.add_food_truck(@mountain_truck)
+    @event.add_food_truck(@nom_truck)
+    @event.add_food_truck(@shack_truck)
+    
+    @mountain_truck.stock(@peach, 35)
+    @mountain_truck.stock(@apple, 7)
+
+    @nom_truck.stock(@banana_nice_cream, 50)
+    @nom_truck.stock(@peach_nice_cream, 25)
+
+    @shack_truck.stock(@peach, 65)
+    @shack_truck.stock(@peach_nice_cream, 10)
+  end
+
+  it 'sorts items alphabetically' do
+    expect(@event.sorted_item_list).to be_a Array
+    expect(@event.sorted_item_list.length).to eq 4
+  end
+ end
+
+  describe '#overstocked_items' do
+    before :each do
+      @event.add_food_truck(@mountain_truck)
+      @event.add_food_truck(@nom_truck)
+      @event.add_food_truck(@shack_truck)
+
+      @mountain_truck.stock(@peach, 35)
+      @mountain_truck.stock(@apple, 7)
+
+      @nom_truck.stock(@banana_nice_cream, 50)
+      @nom_truck.stock(@peach_nice_cream, 25)
+
+      @shack_truck.stock(@peach, 65)
+      @shack_truck.stock(@peach_nice_cream, 10)
+    end
+
+    it 'returns items that are sold on multiple trucks and quantity over 50' do
+      expect(@event.overstocked_items).to eq [@peach]
+    end
+  end
+
+  describe '#total_inventory' do
+    before :each do
+      @event.add_food_truck(@mountain_truck)
+      @event.add_food_truck(@nom_truck)
+      @event.add_food_truck(@shack_truck)
+
+      @mountain_truck.stock(@peach, 35)
+      @mountain_truck.stock(@apple, 7)
+
+      @nom_truck.stock(@banana_nice_cream, 50)
+      @nom_truck.stock(@peach_nice_cream, 25)
+
+      @shack_truck.stock(@peach, 65)
+      @shack_truck.stock(@peach_nice_cream, 10)
+    end
+    it 'should return a hash of items with the total quantity and what trucks it is on' do
+      expect(@event.total_inventory).to be_a Hash
+      expect(@event.total_inventory).to have_key Hash
+      
+      @event.total_inventory.each do |item, info|
+        expect(info).to have_key(:food_trucks)
+        expect(info[:food_trucks]).to be_a Array
+        expect(info).to have_key(:quantity)
+      end
     end
   end
 
