@@ -12,21 +12,14 @@ class Event
   end
 
   def food_truck_names
-    truck_name = []
-    @food_trucks.each do |truck|
-      truck_name << truck.name
+    @food_trucks.map do |truck|
+      truck.name
     end
-    truck_name
   end
 
   def food_trucks_that_sell(item)
     @food_trucks.map do |truck|
-        truck.inventory.each do |ito|
-          @trucks_with_items = Array.new(0)
-          ito == item
-          @trucks_with_items << truck
-        end
-      @trucks_with_items
-    end
+        truck if truck.inventory.include?(item)
+    end.compact
   end
 end

@@ -9,7 +9,7 @@ RSpec.describe Item do
     it 'exists and has attributes' do
       expect(@item).to be_a(Item)
       expect(@item.name).to be_a String
-      expect(@item.price).to be_a Integer
+      expect(@item.price).to be_a Float
     end
   end
 end
