@@ -23,24 +23,27 @@ RSpec.describe FoodTruck do
     end
   end
 
-  before :each do
-    @mountain_truck.stock(@peach, 35)
-    @mountain_truck.stock(@apple, 7) 
-  end
-
-
   describe '#stock_item(item, amount)' do
+    before :each do
+      @mountain_truck.stock(@peach, 35)
+      @mountain_truck.stock(@apple, 7) 
+    end
+
     it 'adds an item to inventory' do
       expect(@mountain_truck.inventory).to have_key(@peach)
     end
 
     it 'adds to item quantity if item exists in inventory' do
       @mountain_truck.stock(@peach, 30)
-      expect(@mountain_truck.check_stock(@peach)).to eq 60
+      expect(@mountain_truck.check_stock(@peach)).to eq 65
     end
   end
 
   describe '#potential_revenue' do
+    before :each do
+      @mountain_truck.stock(@peach, 35)
+      @mountain_truck.stock(@apple, 7) 
+    end
     it 'can calculate the revenue of a food truck' do
       expect(@mountain_truck.potential_revenue).to eq 148.75
     end
