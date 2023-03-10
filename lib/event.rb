@@ -73,4 +73,29 @@ class Event
     hash
   end
 
+  def sell(item, quantity)
+    found = inventory_hash.find { |inventory, info| inventory == item}
+    if found[1][:quantity] > quantity
+      reduce_inventory(item, quantity)
+      return true
+    else
+      return false
+    end
+  end
+
+  def reduce_inventory(item, quantity)
+    count = quantity
+    food_trucks_that_sell(item).each do |truck|
+      truck.inventory.each do |inventory, amount| 
+        if inventory == item
+          truck.inventory[inventory] = amount -= count
+          if truck.inventory[inventory].negative?
+            truck.inventory[inventory] = 0
+            reduce_inventory(inventory, (amount -= count))
+          end
+        end
+      end
+    end
+  end
+
 end

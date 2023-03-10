@@ -189,9 +189,9 @@ RSpec.describe Event do
     end
 
     it 'if returns true it reducces the stock by the amount' do
-      expect(@event.check_stock(@banana_nice_cream)).to eq 50
+      expect(@nom_truck.check_stock(@banana_nice_cream)).to eq 50
       expect(@event.sell(@banana_nice_cream, 5)).to eq true
-      expect(@event.check_stock(@banana_nice_cream)).to eq 45
+      expect(@nom_truck.check_stock(@banana_nice_cream)).to eq 45
     end
 
   end
