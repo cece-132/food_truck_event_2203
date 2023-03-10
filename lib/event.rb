@@ -1,10 +1,16 @@
 require 'pry'
+require 'date'
 
 class Event
-  attr_reader :name, :food_trucks
+  attr_reader :name, :food_trucks, :created_on
   def initialize(name)
       @name = name
       @food_trucks = []
+      @created_on = DateTime.now
+  end
+
+  def date
+    @created_on.strftime('%d/%m/%y')
   end
 
   def add_food_truck(food_truck)

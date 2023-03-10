@@ -130,9 +130,10 @@ RSpec.describe Event do
       @shack_truck.stock(@peach, 65)
       @shack_truck.stock(@peach_nice_cream, 10)
     end
+
     it 'should return a hash of items with the total quantity and what trucks it is on' do
       expect(@event.total_inventory).to be_a Hash
-      expect(@event.total_inventory).to have_key Hash
+      expect(@event.total_inventory).to have_key @peach
       
       @event.total_inventory.each do |item, info|
         expect(info).to have_key(:food_trucks)
@@ -140,6 +141,59 @@ RSpec.describe Event do
         expect(info).to have_key(:quantity)
       end
     end
+  end
+
+  describe '#date' do
+    before :each do
+      @event.add_food_truck(@mountain_truck)
+      @event.add_food_truck(@nom_truck)
+      @event.add_food_truck(@shack_truck)
+
+      @mountain_truck.stock(@peach, 35)
+      @mountain_truck.stock(@apple, 7)
+
+      @nom_truck.stock(@banana_nice_cream, 50)
+      @nom_truck.stock(@peach_nice_cream, 25)
+
+      @shack_truck.stock(@peach, 65)
+      @shack_truck.stock(@peach_nice_cream, 10)
+    end
+
+    it 'returns the date the event was created on' do
+      expect(@event.date).to eq DateTime.now.strftime('%d/%m/%y')
+    end
+  end
+
+  describe '#sell(item, quantity)' do
+    before :each do
+      @event.add_food_truck(@mountain_truck)
+      @event.add_food_truck(@nom_truck)
+      @event.add_food_truck(@shack_truck)
+
+      @mountain_truck.stock(@peach, 35)
+      @mountain_truck.stock(@apple, 7)
+
+      @nom_truck.stock(@banana_nice_cream, 50)
+      @nom_truck.stock(@peach_nice_cream, 25)
+
+      @shack_truck.stock(@peach, 65)
+      @shack_truck.stock(@peach_nice_cream, 10)
+    end
+
+    it 'returns false if the event doesnt have enough in stock' do
+      expect(@event.sell(@peach, 200)).to eq false
+    end
+
+    it 'returns true if the event does have enough in stock' do
+      expect(@event.sell(@banana_nice_cream, 5)).to eq true
+    end
+
+    it 'if returns true it reducces the stock by the amount' do
+      expect(@event.check_stock(@banana_nice_cream)).to eq 50
+      expect(@event.sell(@banana_nice_cream, 5)).to eq true
+      expect(@event.check_stock(@banana_nice_cream)).to eq 45
+    end
+
   end
 
 end
